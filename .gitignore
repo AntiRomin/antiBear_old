@@ -1,1 +1,9 @@
+.mxproject
+/MDK-ARM/*
 
+!/MDK-ARM/*.s
+!/MDK-ARM/*.uvoptx
+!/MDK-ARM/*.uvprojx
+
+# artefacts for Visual Studio Code
+/.vscode/
