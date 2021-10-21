@@ -54,7 +54,7 @@
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\List\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\lib\main\CMSIS\Core\Include;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\main\STM32H7\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\src\main;..\src\main\startup;..\src\main\vcp</IncludePath>
+              <IncludePath>..\lib\main\CMSIS\Core\Include;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\main\STM32H7\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\src\main;..\src\main\startup;..\src\main\vcp;..\src\main\drivers</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,7 +381,7 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>lib/STM32H7xx_HAL_Driver</GroupName>
+          <GroupName>lib/hal_driver</GroupName>
           <Files>
             <File>
               <FileName>stm32h7xx_hal_cortex.c</FileName>
@@ -522,6 +522,16 @@
               <FileName>stm32h7xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\main\vcp\stm32h7xx_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>src/drivers</GroupName>
+          <Files>
+            <File>
+              <FileName>light_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\light_led.c</FilePath>
             </File>
           </Files>
         </Group>

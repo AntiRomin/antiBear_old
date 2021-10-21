@@ -2,11 +2,17 @@
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
+#include "light_led.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef hrtc;
+
+gpioLed_t LED_R;
+gpioLed_t LED_G;
+gpioLed_t LED_B;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -32,10 +38,21 @@ int main(void)
     MX_GPIO_Init();
     MX_RTC_Init();
 
+    gpioLedInit(&LED_R, LED_R_GPIO_Port, LED_R_Pin, LED_INVERSIONTYPE_INVERTED);
+    gpioLedInit(&LED_G, LED_G_GPIO_Port, LED_G_Pin, LED_INVERSIONTYPE_INVERTED);
+    gpioLedInit(&LED_B, LED_B_GPIO_Port, LED_B_Pin, LED_INVERSIONTYPE_INVERTED);
     /* Infinite loop */
     while (1)
     {
-        HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
+        gpioLedSet(&LED_R, true);
+        HAL_Delay(250);
+        gpioLedSet(&LED_R, false);
+        gpioLedSet(&LED_G, true);
+        HAL_Delay(250);
+        gpioLedSet(&LED_G, false);
+        gpioLedSet(&LED_B, true);
+        HAL_Delay(250);
+        gpioLedSet(&LED_B, false);
     }
 }
 
