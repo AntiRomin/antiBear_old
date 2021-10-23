@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -529,9 +529,24 @@
           <GroupName>src/drivers</GroupName>
           <Files>
             <File>
+              <FileName>io.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\pwm.c</FilePath>
+            </File>
+            <File>
               <FileName>light_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\main\drivers\light_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>light_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\light_rgb.c</FilePath>
             </File>
           </Files>
         </Group>

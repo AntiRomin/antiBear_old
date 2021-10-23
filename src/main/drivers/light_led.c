@@ -1,9 +1,14 @@
 #include "light_led.h"
 
-void IOWrite(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, bool hi);
-void pwmAutoReloadSet(TIM_HandleTypeDef *htim, uint32_t period);
-void pwmOutputSet(TIM_HandleTypeDef *htim, uint32_t channel, bool state);
-void pwmCompareSet(TIM_HandleTypeDef *htim, uint32_t channel, uint32_t pwmBrightness);
+#include "io.h"
+#include "pwm.h"
+
+#ifdef PWM_GAMMA_CORRECTION
+#include <math.h>
+#endif
+
+#define __IS_VALID_MAXBRIGHTNESS(__HANDLE__, maxBrightness) (pwmGetAutoReload(__HANDLE__) >= maxBrightness ? true : false)
+#define __IS_VALID_BRIGHTNESS(__PWMLED__, brightness) (__PWMLED__->maxBrightness >= brightness ? true : false)
 
 void gpioLedInit(gpioLed_t *gpioLed, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, ledInversionType_e inversion)
 {
@@ -19,53 +24,49 @@ void gpioLedSet(const gpioLed_t *gpioLed, bool state)
     IOWrite(gpioLed->GPIOx, gpioLed->GPIO_Pin, state ? !(gpioLed->inversion) : (gpioLed->inversion));
 }
 
-void pwmLedInit(pwmLed_t *pwmLed, TIM_HandleTypeDef *htim, uint32_t channel, uint32_t pwmBrightnessLevel, ledInversionType_e inversion)
+void pwmLedInit(pwmLed_t *pwmLed, TIM_HandleTypeDef *htim, uint32_t channel, uint32_t maxBrightness, ledInversionType_e inversion)
 {
-    pwmLed->htim = htim;
-    pwmLed->channel = channel;
-    pwmLed->pwmBrightnessLevel = pwmBrightnessLevel - 1;
-    pwmLed->inversion = inversion;
+    if (__IS_VALID_MAXBRIGHTNESS(htim, maxBrightness))
+    {
+        pwmLed->htim = htim;
+        pwmLed->channel = channel;
+        pwmLed->maxBrightness = maxBrightness;
+        pwmLed->inversion = inversion;
 
-    pwmAutoReloadSet(pwmLed->htim, pwmLed->pwmBrightnessLevel);
-    pwmCompareSet(pwmLed->htim, pwmLed->channel, inversion ? pwmLed->pwmBrightnessLevel : 0);
+        pwmSetAutoReload(pwmLed->htim, pwmLed->maxBrightness);
+        pwmSetCompare(pwmLed->htim, pwmLed->channel, inversion ? pwmLed->maxBrightness : 0);
+    }
+}
+
+void pwmLedSetMaxBrightness(pwmLed_t *pwmLed, uint32_t maxBrightness)
+{
+    if (__IS_VALID_MAXBRIGHTNESS(pwmLed->htim, maxBrightness))
+    {
+        pwmLed->maxBrightness = maxBrightness;
+
+        pwmSetAutoReload(pwmLed->htim, pwmLed->maxBrightness);
+        pwmSetCompare(pwmLed->htim, pwmLed->channel, pwmLed->inversion ? pwmLed->maxBrightness : 0);
+    }
 }
 
 void pwmLedSet(const pwmLed_t *pwmLed, bool state)
 {
-    pwmOutputSet(pwmLed->htim, pwmLed->channel, state);
+    pwmSetOutput(pwmLed->htim, pwmLed->channel, state);
 }
 
-void pwmLedSetBrightnessLevel(const pwmLed_t *pwmLed, uint32_t brightnessLevel)
+void pwmLedSetBrightness(const pwmLed_t *pwmLed, uint32_t brightness)
 {
-    if ((brightnessLevel - 1) <= pwmLed->pwmBrightnessLevel && (brightnessLevel - 1) > 0)
+    if (__IS_VALID_BRIGHTNESS(pwmLed, brightness))
     {
-        pwmCompareSet(pwmLed->htim, pwmLed->channel, pwmLed->inversion ? (pwmLed->pwmBrightnessLevel - (brightnessLevel - 1)) : (brightnessLevel - 1));
+#ifdef PWM_GAMMA_CORRECTION
+        float gammaRatio = pow(((float)brightness / (float)pwmLed->maxBrightness), PWM_GAMMA);
+        brightness = pwmLed->maxBrightness * gammaRatio;
+#endif
+        pwmSetCompare(pwmLed->htim, pwmLed->channel, pwmLed->inversion ? (pwmLed->maxBrightness - brightness) : brightness);
     }
 }
 
-void IOWrite(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, bool hi)
+uint32_t pwmLedGetBrightness(const pwmLed_t *pwmLed)
 {
-    HAL_GPIO_WritePin(GPIOx, GPIO_Pin, hi ? GPIO_PIN_SET : GPIO_PIN_RESET);
-}
-
-void pwmAutoReloadSet(TIM_HandleTypeDef *htim, uint32_t period)
-{
-    __HAL_TIM_SET_AUTORELOAD(htim, period);
-}
-
-void pwmOutputSet(TIM_HandleTypeDef *htim, uint32_t channel, bool state)
-{
-    if (state == true)
-    {
-        HAL_TIM_PWM_Start(htim, channel);
-    }
-    else
-    {
-        HAL_TIM_PWM_Start(htim, channel);
-    }
-}
-
-void pwmCompareSet(TIM_HandleTypeDef *htim, uint32_t channel, uint32_t pwmBrightness)
-{
-    __HAL_TIM_SET_COMPARE(htim, channel, pwmBrightness);
+    return (pwmLed->inversion == LED_INVERSIONTYPE_NORMAL ? pwmGetCompare(pwmLed->htim, pwmLed->channel) : (pwmLed->maxBrightness - pwmGetCompare(pwmLed->htim, pwmLed->channel)));
 }

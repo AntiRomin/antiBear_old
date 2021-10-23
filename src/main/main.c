@@ -3,6 +3,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 #include "light_led.h"
+#include "light_rgb.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -13,9 +14,17 @@ RTC_HandleTypeDef hrtc;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
+// gpioLed_t LED_R;
+// gpioLed_t LED_G;
+// gpioLed_t LED_B;
+
+// gpioRGB_t gpioRGB;
+
 pwmLed_t LED_R;
 pwmLed_t LED_G;
 pwmLed_t LED_B;
+
+pwmRGB_t pwmRGB;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -45,42 +54,80 @@ int main(void)
     MX_TIM2_Init();
     MX_TIM3_Init();
 
-    pwmLedInit(&LED_R, &htim3, TIM_CHANNEL_3, 256, LED_INVERSIONTYPE_INVERTED);
-    pwmLedInit(&LED_G, &htim3, TIM_CHANNEL_4, 256, LED_INVERSIONTYPE_INVERTED);
-    pwmLedInit(&LED_B, &htim2, TIM_CHANNEL_4, 256, LED_INVERSIONTYPE_INVERTED);
+    // gpioLedInit(&LED_R, LED_R_GPIO_Port, LED_R_Pin, LED_INVERSIONTYPE_INVERTED);
+    // gpioLedInit(&LED_G, LED_G_GPIO_Port, LED_G_Pin, LED_INVERSIONTYPE_INVERTED);
+    // gpioLedInit(&LED_B, LED_B_GPIO_Port, LED_B_Pin, LED_INVERSIONTYPE_INVERTED);
 
-    pwmLedSet(&LED_R, true);
-    pwmLedSet(&LED_G, true);
-    pwmLedSet(&LED_B, true);
+    // gpioRGBInit(&gpioRGB, &LED_R, &LED_G, &LED_B);
 
-    float R = 0;
-    float G = 147;
-    float B = 221;
+    pwmLedInit(&LED_R, &htim3, TIM_CHANNEL_3, 2047, LED_INVERSIONTYPE_INVERTED);
+    pwmLedInit(&LED_G, &htim3, TIM_CHANNEL_4, 2047, LED_INVERSIONTYPE_INVERTED);
+    pwmLedInit(&LED_B, &htim2, TIM_CHANNEL_4, 2047, LED_INVERSIONTYPE_INVERTED);
+
+    pwmRGBInit(&pwmRGB, &LED_R, &LED_G, &LED_B);
+    pwmRGBSetRGB(&pwmRGB, 123, 112, 255);
+
+    // static uint32_t brightness = 0;
+
     /* Infinite loop */
     while (1)
     {
-        static uint8_t tR;
-        static uint8_t tG;
-        static uint8_t tB;
-        for (uint16_t i = 0; i < 1023; i++)
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_BLACK);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_RED);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_GREEN);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_BLUE);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_YELLOW);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_MAGENTA);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_CYAN);
+        // HAL_Delay(250);
+        // gpioRGBSetColor(&gpioRGB, GPIORGB_COLORTYPE_WHITE);
+        // HAL_Delay(250);
+
+        // pwmRGBSetRGB(&pwmRGB, 0x00, 0x00, 0x00);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0xFF, 0x00, 0x00);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0x00, 0xFF, 0x00);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0x00, 0x00, 0xFF);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0xFF, 0xFF, 0x00);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0xFF, 0x00, 0xFF);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0x00, 0xFF, 0xFF);
+        // HAL_Delay(250);
+        // pwmRGBSetRGB(&pwmRGB, 0xFF, 0xFF, 0xFF);
+        // HAL_Delay(250);
+
+        // pwmRGBSetBrightness(&pwmRGB, brightness);
+
+        // for (uint16_t i = 0; i < 1024; i++)
+        // {
+        //     pwmRGBSetBrightness(&pwmRGB , i);
+        //     HAL_Delay(1);
+        // }
+        // for (uint16_t i = 1023; i > 0; i--)
+        // {
+        //     pwmRGBSetBrightness(&pwmRGB , i);
+        //     HAL_Delay(1);
+        // }
+
+        for (uint16_t i = 0; i < 256; i++)
         {
-            tR = (i * (R / 1023)) + 1;
-            tG = (i * (G / 1023)) + 1;
-            tB = (i * (B / 1023)) + 1;
-            pwmLedSetBrightnessLevel(&LED_R, tR);
-            pwmLedSetBrightnessLevel(&LED_G, tG);
-            pwmLedSetBrightnessLevel(&LED_B, tB);
-            HAL_Delay(1);
+            pwmRGBSetAlpha(&pwmRGB , i);
+            HAL_Delay(8);
         }
-        for (uint16_t i = 1023; i > 0; i--)
+        for (uint16_t i = 255; i > 0; i--)
         {
-            tR = (i * (R / 1023)) + 1;
-            tG = (i * (G / 1023)) + 1;
-            tB = (i * (B / 1023)) + 1;
-            pwmLedSetBrightnessLevel(&LED_R, tR);
-            pwmLedSetBrightnessLevel(&LED_G, tG);
-            pwmLedSetBrightnessLevel(&LED_B, tB);
-            HAL_Delay(1);
+            pwmRGBSetAlpha(&pwmRGB , i);
+            HAL_Delay(8);
         }
     }
 }
@@ -249,10 +296,32 @@ static void MX_TIM3_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+    // GPIO_InitTypeDef GPIO_InitStruct = {0};
+
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOH_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    // /*Configure GPIO pin Output Level */
+    // HAL_GPIO_WritePin(GPIOB, LED_G_Pin | LED_R_Pin, GPIO_PIN_SET);
+
+    // /*Configure GPIO pin Output Level */
+    // HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
+
+    // /*Configure GPIO pins : LED_G_Pin LED_R_Pin */
+    // GPIO_InitStruct.Pin = LED_G_Pin | LED_R_Pin;
+    // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    // GPIO_InitStruct.Pull = GPIO_NOPULL;
+    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    // /*Configure GPIO pin : LED_B_Pin */
+    // GPIO_InitStruct.Pin = LED_B_Pin;
+    // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    // GPIO_InitStruct.Pull = GPIO_NOPULL;
+    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    // HAL_GPIO_Init(LED_B_GPIO_Port, &GPIO_InitStruct);
 }
 
 /**
