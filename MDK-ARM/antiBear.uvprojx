@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\lib\main\CMSIS\Core\Include;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\main\STM32H7\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\src\main;..\src\main\startup;..\src\main\vcp;..\src\main\drivers</IncludePath>
+              <IncludePath>..\lib\main\CMSIS\Core\Include;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\;..\lib\main\STM32H7\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy;..\lib\main\STM32H7\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\src\main;..\src\main\startup;..\src\main\vcp;..\src\main\core;..\src\main\drivers</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -526,12 +526,37 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>src/core</GroupName>
+          <Files>
+            <File>
+              <FileName>init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\core\init.c</FilePath>
+            </File>
+            <File>
+              <FileName>app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\core\app.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>src/drivers</GroupName>
           <Files>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\system.c</FilePath>
+            </File>
             <File>
               <FileName>io.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\main\drivers\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\main\drivers\timer.c</FilePath>
             </File>
             <File>
               <FileName>pwm.c</FileName>

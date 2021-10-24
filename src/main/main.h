@@ -9,11 +9,7 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-
 /* Private defines -----------------------------------------------------------*/
 #define LED_G_Pin GPIO_PIN_1
 #define LED_G_GPIO_Port GPIOB
