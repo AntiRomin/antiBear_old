@@ -3,6 +3,7 @@
 #include "drivers/system.h"
 #include "drivers/io.h"
 #include "drivers/timer.h"
+#include "drivers/i2c.h"
 
 RTC_HandleTypeDef hrtc;
 
@@ -14,6 +15,7 @@ void init(void)
 
     IOInit();
     timerInit();
+    i2cInit();
 
     MX_RTC_Init();
 }
