@@ -4,6 +4,7 @@
 #include "drivers/io.h"
 #include "drivers/timer.h"
 #include "drivers/i2c.h"
+#include "drivers/qspi.h"
 
 RTC_HandleTypeDef hrtc;
 
@@ -16,6 +17,7 @@ void init(void)
     IOInit();
     timerInit();
     i2cInit();
+    qspiInit();
 
     MX_RTC_Init();
 }

@@ -17,6 +17,12 @@ at24c02cHandle_t at24c02cHandle;
 uint8_t writeData[256];
 uint8_t readData[256];
 
+struct {
+    uint8_t R;
+    uint8_t G;
+    uint8_t B;
+} rgbRuntime;
+
 void appInit(void)
 {
     pwmLedInit(&LED_R, &htim3, TIM_CHANNEL_3, 2047, LED_INVERSIONTYPE_INVERTED);
@@ -52,5 +58,6 @@ void run(void)
                 }
             }
         }
+        pwmRGBSetRGB(&pwmRGB, rgbRuntime.R, rgbRuntime.G, rgbRuntime.B);
     }
 }
